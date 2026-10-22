@@ -1,4 +1,4 @@
-import "package:lms_layered_architecture_example/model/result.dart";
+import "package:lms_layered_architecture_example/model/score.dart";
 
 import "../model/student.dart";
 import "../model/course.dart";
@@ -165,12 +165,23 @@ class LmsSystem {
   }
 
   void removeStudent({required String studentId}) {
-    Student? student = _findStudentOrNull(studentId);
-    if (student == null) {
-      throw Exception('Student $studentId not found');
+    // find student
+    Student? s = students.where((s) => s.id == studentId).firstOrNull;
+    if (s == null) {
+      throw Exception("Student doesn't exist");
     }
-    // 1- Remove student from the students list
-    students.removeWhere((student) => student.id == studentId);
+
+    // remove score of the student
+    for (String scoreId in s.scoreIds) {
+      scores.removeWhere((s) => s.id == scoreId);
+    }
+
+    // remove student from all coures
+    for (Course c in courses) {
+      c.studentIds.remove(s.id);
+    }
+
+    students.remove(s);
   }
 
   Student? _findStudentOrNull(String studentId) {

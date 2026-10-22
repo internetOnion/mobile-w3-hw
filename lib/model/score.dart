@@ -1,6 +1,6 @@
 class Score {
-  String id;
-  double score;
+  final String id;
+  final double score;
 
   Score({required this.id, required this.score});
 }

@@ -1,5 +1,5 @@
 import 'package:lms_layered_architecture_example/model/course.dart';
-import 'package:lms_layered_architecture_example/model/result.dart';
+import 'package:lms_layered_architecture_example/model/score.dart';
 import 'package:lms_layered_architecture_example/model/student.dart';
 import 'package:test/test.dart';
 
@@ -16,12 +16,28 @@ void main() {
   });
 
   test("remove a valid student should remove the student", () {
+    // prepare
     final LmsSystem lms = LmsSystem();
+    final Student s = Student(id: "67", name: "Nou Reaksmey");
+    final Course c = Course(id: "82", name: "Seata");
+    final Score sc = Score(id: "Score", score: 100);
 
-    lms.addStudent(studentId: 'S1', studentName: "ronan");
-    lms.removeStudent(studentId: 'S1');
+    lms.addStudent(studentId: s.id, studentName: s.name);
+    lms.addCourse(courseId: c.id, courseName: c.name);
+    lms.enrollStudent(s.id, c.id);
+    lms.addResult(s.id, c.id, sc.id, sc.score);
 
+    // act
+    lms.removeStudent(studentId: s.id);
+
+    // assert
+
+    // remove from course
+    expect(lms.courses.first.studentIds.contains(s.id), false);
+    // remove from system
     expect(lms.students.length, 0);
+    // remove all score that associated with the student
+    expect(lms.scores.length, 0);
   });
 
   test("create a valid course should have the course", () {
